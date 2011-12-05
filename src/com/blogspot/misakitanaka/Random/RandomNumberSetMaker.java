@@ -229,11 +229,11 @@ public class RandomNumberSetMaker implements ActionListener,
 		}
 
 		private String getNumbers(){
-			String s="";
+			StringBuilder s = new StringBuilder();
 			for (String element: numberSet){
-				s = s + element + "\n";
+				s.append(element + "\n");
 			}
-			return s;
+			return s.toString();
 		} 
 		
 		private void putFile(String s){
