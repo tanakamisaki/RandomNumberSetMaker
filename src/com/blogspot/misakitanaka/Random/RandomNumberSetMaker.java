@@ -155,6 +155,8 @@ public class RandomNumberSetMaker implements ActionListener,
 			Pattern p = Pattern.compile(regex);
 			
 			long draftCounter = 0;
+			long notMuchCounter = 0;
+			long notMuchToSetCounter = 0;
 			long min = (long) Math.pow(10.0, digit - 1);
 			long max = (long) Math.pow(10.0, digit)-1; 
 
@@ -167,18 +169,25 @@ public class RandomNumberSetMaker implements ActionListener,
 				number = (long) (Math.random() * (max - min + 1)) + min;
 				String s =  new Long(number).toString();
 				Matcher m = p.matcher(s);
-				if (!(m.find())){
+
+				if (!m.find()){					
 					if (!(checkNumberSet(s))){
 						numberSet.add(Long.toString(number));
 						setProgress((int)numberSet.size()* 90 / amount);
+					}else{
+						notMuchToSetCounter++;
 					}
+				}else{
+					notMuchCounter ++;
+					// System.out.println("not much 'like random number': " + s);
 				}
+				
 				if (progressMonitor.isCanceled()){
 					cancel(false);
 					return null;
 				}
 			}
-			System.out.println("Finished to generate. digit: " + digit + " amount: " + amount + " draft: " + draftCounter);
+			System.out.println("Finished to generate. digit: " + digit + " amount: " + amount + " draft: " + draftCounter + " not much: " + notMuchCounter + " not much to set: " + notMuchToSetCounter );
 			progressMonitor.setNote("Putting file 'ran.txt'");
 			String s = getNumbers();
 			progressMonitor.setProgress(95);
@@ -189,6 +198,7 @@ public class RandomNumberSetMaker implements ActionListener,
 		
 		@Override
 		public void done() {
+			progressMonitor.close();
 			if (isCancelled()){
 				JOptionPane.showMessageDialog(null, "Canceled...");
 				System.out.println("Canceled...");
@@ -196,7 +206,6 @@ public class RandomNumberSetMaker implements ActionListener,
 				JOptionPane.showMessageDialog(null, "Finished!");
 				System.out.println("Finished!");
 			}
-			progressMonitor.close();
 			button.setEnabled(true);			
 		}
 		
@@ -208,7 +217,7 @@ public class RandomNumberSetMaker implements ActionListener,
 				Matcher m = p.matcher(Element);
 				result = m.find();
 				if (result){
-					System.out.println("The number like " + Element + " already exists in number set");
+					System.out.println("The number like " + s + " already exists in number set :" + Element);
 					break;
 				}
 			}
